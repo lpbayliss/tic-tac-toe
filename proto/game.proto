@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+package game;
+
+option go_package = "github.com/lbayliss/tic-tac-toe;go_tictactoe_grpc";
+
+service Game {
+  rpc FindGame(FindGameRequest) returns (FindGameResponse) {}
+  rpc JoinGame(stream ClientStream) returns (stream ServerStream) {}
+}
+
+message FindGameRequest {}
+
+message FindGameResponse {
+  string token = 1;
+}
+
+message JoinGame {
+  string token = 1;
+}
+
+message Position {
+  int32 x = 1;
+  int32 y = 2;
+}
+
+message PlaceToken {
+  Position position = 1;
+}
+
+message ForfeitGame {}
+
+message LeaveGame {}
+
+message ClientStream {
+  oneof action {
+    JoinGame join = 1;
+    PlaceToken placeToken = 2;
+    ForfeitGame forfeit = 3;
+    LeaveGame leave = 4;
+  }
+}
+
+enum Player {
+  ONE = 0;
+  TWO = 1;
+}
+
+message JoinSuccess {
+  Player player = 1;
+}
+
+message JoinFailure {
+  string error = 1;
+}
+
+enum Symbol {
+  NAUGHT = 0;
+  CROSS = 1;
+}
+
+message GameBoard {
+  repeated int32 dimensions = 1;
+  repeated Symbol elements = 2;
+}
+
+message GameUpdate {
+  Player playerTurn = 1;
+  GameBoard board = 2;
+}
+
+message GameOver {
+  Player winner = 1;
+}
+
+message GameReset {
+  Player player = 1;
+}
+
+message ServerStream {
+  oneof action {
+    JoinSuccess joinSuccess = 1;
+    JoinFailure joinFailure = 2;
+    GameUpdate gameUpdate = 3;
+    GameOver gameOver = 4;
+    GameReset gameReset = 5;
+  }
+}
