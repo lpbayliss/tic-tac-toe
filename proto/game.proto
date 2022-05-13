@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package game;
 
-option go_package = "github.com/lbayliss/tic-tac-toe;go_tictactoe_grpc";
+option go_package = "github.com/lbayliss/tic-tac-toe;go_game_grpc";
 
 service Game {
   rpc FindGame(FindGameRequest) returns (FindGameResponse) {}

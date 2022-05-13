@@ -4,7 +4,7 @@
 // - protoc             v3.20.1
 // source: proto/game.proto
 
-package go_tictactoe_grpc
+package go_game_grpc
 
 import (
 	context "context"
