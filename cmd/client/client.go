@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"io"
 	"log"
 	"time"
 
@@ -28,6 +29,19 @@ func main() {
 	defer cancel()
 
 	r, err := c.FindGame(ctx, &pb.FindGameRequest{})
+
+	s, err := c.JoinGame(ctx, &pb.JoinGame{Token: r.GetToken()})
+
+	for {
+		f, err := s.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatalf("Error: %v", err)
+		}
+		log.Printf("You Are Player: %v", f.GetJoinSuccess().Player)
+	}
 
 	log.Printf("Game Found: %v", r.GetToken())
 }

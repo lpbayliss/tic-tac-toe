@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"time"
 
 	"github.com/google/uuid"
 	pb "github.com/lpbayliss/tic-tac-toe/game"
@@ -19,9 +20,23 @@ type GameServer struct {
 	pb.UnimplementedGameServer
 }
 
-func (s* GameServer) FindGame(context.Context, *pb.FindGameRequest) (*pb.FindGameResponse, error) {
-	log.Print("Received FindGame Request");
+func (s *GameServer) FindGame(context.Context, *pb.FindGameRequest) (*pb.FindGameResponse, error) {
+	log.Print("Received FindGame Request")
 	return &pb.FindGameResponse{Token: uuid.NewString()}, nil
+}
+
+func (s *GameServer) JoinGame(stream pb.Game_JoinGameServer) error {
+	for {
+		stream.Send(&pb.ServerStream{
+			Action: &pb.ServerStream_JoinSuccess{
+				JoinSuccess: &pb.JoinSuccess{
+					Player: pb.Player_ONE,
+				},
+			},
+		})
+		
+		time.Sleep(1 * time.Second)
+	}
 }
 
 func main() {
